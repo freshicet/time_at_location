@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Timezone Info</title>
+		<script src="popup.js"></script>
+		<script src="moment.min.js"></script>
+	</head>
+	<body>
+		<div id="time"></div>
+		<script>
+			chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+				chrome.tabs.sendMessage(
+					tabs[0].id,
+					{ action: 'getTimezoneInfo' },
+					function (response) {
+						if (response && response.timezone) {
+							console.log(`Received timezone info:`, response);
+							const timezone = response.timezone;
+							fetchTimezoneInfo(timezone)
+								.then((result) => {
+									console.log(`Received time info:`, result);
+									const time = new Date(result.datetime);
+									const offset = parseInt(result.utc_offset.substring(0, 3));
+									chrome.runtime.sendMessage({ time: time, offset: offset });
+								})
+								.catch((error) => {
+									console.error(`Error while fetching time info:`, error);
+								});
+						} else {
+							console.error(`Invalid response received:`, response);
+						}
+					}
+				);
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,33 @@
+{
+	"manifest_version": 2,
+	"name": "Timezone Lookup",
+	"version": "1.0",
+	"icons": {
+		"16": "clock.png",
+		"32": "clock.png",
+		"48": "clock.png",
+		"128": "clock.png"
+	},
+	"permissions": [
+		"activeTab",
+		"notifications",
+		"contextMenus",
+		"tabs",
+		"https://api.api-ninjas.com/"
+	],
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": ["moment.min.js"]
+		}
+	],
+
+	"background": {
+		"scripts": ["background.js"],
+		"persistent": true
+	},
+	"browser_action": {
+		"default_title": "Timezone Lookup",
+		"default_popup": "popup.html"
+	}
+}
